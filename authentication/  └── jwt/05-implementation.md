@@ -185,9 +185,10 @@ export const config = {
   matcher: ['/dashboard/:path*'],
 };
 ```
-Why this Middleware is "Favorite Student" Level:
+
+-Why this Middleware is "Favorite Student" Level:
 Edge Runtime: Middleware runs on the "Edge" (super fast, before the server even starts thinking).
 
-Automatic Protection: You don't have to write "Check Login" on every single page. The middleware does it once for the whole /dashboard folder.
+-Automatic Protection: You don't have to write "Check Login" on every single page. The middleware does it once for the whole /dashboard folder.
 
-Prevention of "URL Guessing": Even if a student knows the URL is /dashboard/admin, the guard stops them before the page even flickers on the screen.
+-Prevention of "URL Guessing": Even if a student knows the URL is /dashboard/admin, the guard stops them before the page even flickers on the screen.
