@@ -28,7 +28,7 @@ export function verifyToken(token: string) {
   return jwt.verify(token, JWT_SECRET);
 }
 ```
-🧩 2. The Security Guard (api/auth/login/route.ts)
+## 🧩 2. The Security Guard (api/auth/login/route.ts)
 
 This is the "Brain." It handles the incoming request and makes the big decisions.
 
@@ -91,7 +91,7 @@ This is the "Brain." It handles the incoming request and makes the big decisions
   }
 }
 ```
-🧩 3. The Reception Desk (login/page.tsx)
+## 🧩 3. The Reception Desk (login/page.tsx)
 
 This is the code that runs in the user's browser.
 
@@ -123,7 +123,7 @@ const handleLogin = async (e: React.FormEvent) => {
     router.push(`/dashboard/${data.role}`);
 };
 ```
-🧠 Why this structure is "Amazing"
+### 🧠 Why this structure is "Amazing"
 
 Separation of Concerns: The Login Page only cares about UI. The API only cares about Database/Logic. The Auth Lib only cares about Security.
 
