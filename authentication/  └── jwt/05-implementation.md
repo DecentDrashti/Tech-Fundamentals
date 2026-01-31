@@ -130,3 +130,64 @@ Separation of Concerns: The Login Page only cares about UI. The API only cares a
 Statelessness: The server doesn't have to "remember" who is logged in. The user carries their own ID card (the cookie) every time they visit a new page.
 
 Role-Based Access: Because we check the role inside the API, a student can't log into the staff table even if they know a staff member's email.
+
+## 4. The Final Chapter: The "Hallway Guard" (Middleware)
+Now, we need the Middleware. In our story, this is the guard who stands in the hallway to make sure people don't go into rooms they aren't allowed in.
+
+Since you have folders for /dashboard/student, /dashboard/faculty, and /dashboard/admin, the Guard needs to check the ID card before the page loads.
+
+Create a file named middleware.ts in your root directory (outside the app folder):
+
+``` ts
+import { NextResponse } from 'next/server';
+import type { NextRequest } from 'next/server';
+import { jwtVerify } from 'jose'; // We use 'jose' because standard 'jsonwebtoken' doesn't work in Next.js Middleware Edge Runtime
+
+const JWT_SECRET = new TextEncoder().encode(process.env.JWT_SECRET!);
+
+export async function middleware(request: NextRequest) {
+  // 1. Grab the ID card (token) from the user's pocket (cookies)
+  const token = request.cookies.get('token')?.value;
+
+  const { pathname } = request.nextUrl;
+
+  // 2. If they are trying to go to a dashboard but have NO token, send them to login
+  if (pathname.startsWith('/dashboard') && !token) {
+    return NextResponse.redirect(new URL('/login', request.url));
+  }
+
+  try {
+    if (token) {
+      // 3. Perform the 'Math Test' to see if the ID card is real
+      const { payload } = await jwtVerify(token, JWT_SECRET);
+      const userRole = payload.role as string;
+
+      // 4. Role-Based Access Control (The actual "Locking of Doors")
+      // If a student tries to enter /dashboard/admin, kick them out!
+      if (pathname.startsWith('/dashboard/admin') && userRole !== 'admin') {
+        return NextResponse.redirect(new URL('/dashboard/student', request.url));
+      }
+      
+      if (pathname.startsWith('/dashboard/faculty') && userRole !== 'faculty') {
+        return NextResponse.redirect(new URL('/dashboard/student', request.url));
+      }
+    }
+  } catch (error) {
+    // If the token is fake or expired, send them back to login
+    return NextResponse.redirect(new URL('/login', request.url));
+  }
+
+  return NextResponse.next();
+}
+
+// This tells Next.js: "Only run this guard on dashboard routes"
+export const config = {
+  matcher: ['/dashboard/:path*'],
+};
+```
+Why this Middleware is "Favorite Student" Level:
+Edge Runtime: Middleware runs on the "Edge" (super fast, before the server even starts thinking).
+
+Automatic Protection: You don't have to write "Check Login" on every single page. The middleware does it once for the whole /dashboard folder.
+
+Prevention of "URL Guessing": Even if a student knows the URL is /dashboard/admin, the guard stops them before the page even flickers on the screen.
