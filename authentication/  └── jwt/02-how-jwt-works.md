@@ -58,7 +58,7 @@ Purpose: It bundles the data from the form, carries it to the Security Guard, wa
 Why it matters: In Next.js, the page doesn't automatically know how to talk to the database. handleLogin acts as the "courier." It prevents the page from simply refreshing (which is the default behavior) and instead performs a background "fetch" to our API.
 
 ## 7. The Elite Hallway Guard (middleware.ts)
-Think of this as the invisible security laser grid installed in the university hallways.
+Think of this as the invisible security laser grid installed in the university hallways that checks up the id.
 
 Purpose: It acts as a gatekeeper that intercepts a user after they have entered the building but before they reach a specific room (like the Admin or Faculty dashboards).
 
