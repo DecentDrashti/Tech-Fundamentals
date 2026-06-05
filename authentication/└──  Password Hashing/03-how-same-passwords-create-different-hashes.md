@@ -103,7 +103,7 @@ are combined.
 
 ---
 
-## Step 3: The 2048 Rounds
+## Step 3: The 1024 Rounds
 
 Because:
 
